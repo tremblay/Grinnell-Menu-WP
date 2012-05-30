@@ -89,9 +89,9 @@ namespace Glicious
                         hideAllButtons();
                         String s;
                         if (daysAvailableTXT.Text.Equals("0"))
-                            s = System.String.Format("No menus are available for the selected date.\nToday's menu is the only available menu.");
+                            s = "No menus are available for the selected date.\nToday's menu is the only available menu.";
                         else if (daysAvailableTXT.Text.Equals("0"))
-                            s = System.String.Format("No menus are available for the selected date.\nThere is only 1 day after today available.");
+                            s = "No menus are available for the selected date.\nThere is only 1 day after today available.";
                         else
                             s = System.String.Format("No menus are available for the selected date.\nThere are only {0} days after today available.", daysAvailableTXT.Text);
                         textBlock1.Text = s;
@@ -114,7 +114,7 @@ namespace Glicious
             if (appsettings.Contains("date"))
                 appsettings.Remove("date");
             datePicker.ValueStringFormat = "{0:D}";
-            appsettings.Add("date", datePicker.ValueString);
+            appsettings.Add("date", datePicker);
 
             NavigationService.Navigate(new Uri("/VenuesPage.xaml", UriKind.Relative));
         }

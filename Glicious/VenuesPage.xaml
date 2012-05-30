@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -28,7 +28,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox Height="592" HorizontalAlignment="Left" Margin="0,19,0,0" Name="venues" VerticalAlignment="Top" Width="456" />
+            <ListBox Height="565" HorizontalAlignment="Left" Margin="0,46,0,0" Name="venues" VerticalAlignment="Top" Width="456" />
         </Grid>
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="38,121,0,0" Name="meal" Text="" VerticalAlignment="Top" Grid.RowSpan="2" Width="146" FontSize="24" />
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="190,121,0,0" Name="date" Text="" VerticalAlignment="Top" Width="266" Grid.RowSpan="2" TextAlignment="Right" />
