@@ -11,15 +11,24 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.IO.IsolatedStorage;
+using Microsoft.Phone.Shell;
 
 namespace Glicious
 {
-    public partial class Page1 : PhoneApplicationPage
+    public partial class VenuesPage : PhoneApplicationPage
     {
         private IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
-        public Page1()
+        public VenuesPage()
         {
             InitializeComponent();
+
+            ApplicationBar = new ApplicationBar();
+            ApplicationBarIconButton settings = new ApplicationBarIconButton();
+            settings.IconUri = new Uri("/Images/settings.png", UriKind.Relative);
+            settings.Text = "Settings";
+            ApplicationBar.Buttons.Add(settings);
+            settings.Click += new EventHandler(settings_Click);
+
             if ((appsettings.Contains("meal")) && (appsettings.Contains("date")))
             {
                 meal.Text = appsettings["meal"].ToString();
@@ -32,6 +41,10 @@ namespace Glicious
             }
 
             //venues.DataContext = 
+        }
+        void settings_Click(object sender, EventArgs e)
+        {
+             NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage 
-    x:Class="Glicious.VenuesPage"
+    x:Class="Glicious.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -22,16 +22,17 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="Glicious" Text="" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="Venues" Text="Grinnell Dining" Margin="9,-7,0,0" FontFamily="fonts/vivaldi.ttf#Vivaldi" Style="{StaticResource PhoneTextTitle1Style}" TextAlignment="Left" Width="457" FontSize="64" Height="86" />
+            <TextBlock x:Name="ApplicationTitle" Text="SETTINGS" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="Nutritional Filters" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="56" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox Height="592" HorizontalAlignment="Left" Margin="0,19,0,0" Name="venues" VerticalAlignment="Top" Width="456" />
+            <CheckBox Content="Vegan Filter" Height="92" HorizontalAlignment="Left" Margin="83,6,0,0" Name="veganBox" VerticalAlignment="Top" FlowDirection="LeftToRight" Width="286" FontSize="32" />
+            <CheckBox Content="Ovolacto Filter" FlowDirection="LeftToRight" FontSize="32" Height="92" HorizontalAlignment="Left" Margin="83,108,0,0" Name="ovolactoBox" VerticalAlignment="Top" Width="286" />
+            <Image Height="206" Margin="125,273,125,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Source="/Glicious;component/ApplicationIcon.png" />
+            <TextBlock Height="75" HorizontalAlignment="Left" Margin="12,192,0,0" Name="textBlock1" Text="Grinnell Dining" VerticalAlignment="Top" Width="438" FontSize="56" TextAlignment="Center" FontFamily="fonts/vivaldi.ttf#Vivaldi"/>
         </Grid>
-        <TextBlock Height="43" HorizontalAlignment="Left" Margin="38,121,0,0" Name="meal" Text="" VerticalAlignment="Top" Grid.RowSpan="2" Width="146" FontSize="24" />
-        <TextBlock Height="43" HorizontalAlignment="Left" Margin="190,121,0,0" Name="date" Text="" VerticalAlignment="Top" Width="266" Grid.RowSpan="2" TextAlignment="Right" />
     </Grid>
 
 </phone:PhoneApplicationPage>
