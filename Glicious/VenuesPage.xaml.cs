@@ -64,6 +64,23 @@ namespace Glicious
             // ignore scenarios when we navigate back to this page and clear what was previously selected
             if (listBox.SelectedItem != null)
             {
+                Menu.Venue.Dish dummy = new Menu.Venue.Dish("", false, false, false, false, false);
+                Type type = listBox.SelectedItem.GetType();
+                Type type2 = dummy.GetType();
+                if (type.FullName.Equals(type2.FullName)) 
+                {
+                    //Menu.Venue.Dish dummy2 = (Menu.Venue.Dish)listBox.SelectedItem;
+                    //if (dummy2.hasNutrition)
+                    //{
+                        if (appsettings.Contains("nutrDish"))
+                        {
+                            appsettings.Remove("nutrDish");
+                        }
+                        appsettings.Add("nutrDish", listBox.SelectedItem);
+                        NavigationService.Navigate(new Uri("/NutritionPage.xaml", UriKind.Relative));
+                    //}
+                }
+                listBox.SelectedIndex = -1;
                 //var selectedGroupUri = string.Format("/Views/GroupView.xaml?id={0}", id);
                 //NavigationService.Navigate(new Uri(selectedGroupUri, UriKind.Relative));
             }
@@ -100,25 +117,35 @@ namespace Glicious
                     foreach (JToken dish in venue.Children().Children())
                     {
                         bool ovolacto, vegan, halal, passover, hasNutrition;
+
                         String name = (String)dish["name"];
-                        if (dish["ovolacto"].Equals("true"))
+
+                        String ovo = (String)dish["ovolacto"];
+                        if (ovo.Equals("true"))
                             ovolacto = true;
                         else
                             ovolacto = false;
-                        if (dish["vegan"].Equals("true"))
+
+                        String veg = (String)dish["vegan"];
+                        if (veg.Equals("true"))
                             vegan = true;
                         else
                             vegan = false;
-                        if (dish["passover"].Equals("true"))
+
+                        String passO = (String)dish["passover"];
+                        if (passO.Equals("true"))
                             passover = true;
                         else
                             passover = false;
-                        if (dish["halal"].Equals("true"))
+
+                        String hal = (String)dish["halal"];
+                        if (hal.Equals("true"))
                             halal = true;
                         else
                             halal = false;
 
-                        if (dish["nutrition"].Equals("NIL"))
+                        Newtonsoft.Json.Linq.JValue dummy = new Newtonsoft.Json.Linq.JValue(false);
+                        if (dummy.GetType().FullName.Equals(dish["nutrition"].GetType().FullName))
                         {
                             hasNutrition = false;
                             tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal);
