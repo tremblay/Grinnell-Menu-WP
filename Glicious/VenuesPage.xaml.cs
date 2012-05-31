@@ -15,12 +15,17 @@ using Microsoft.Phone.Shell;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
+
 namespace Glicious
 {
     public partial class VenuesPage : PhoneApplicationPage
     {
+        public Menu menu;
         private DatePicker dPicker;
         private IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
+
+       
+
         public VenuesPage()
         {
             InitializeComponent();
@@ -37,7 +42,7 @@ namespace Glicious
                 meal.Visibility = Visibility.Visible;
                 date.Visibility = Visibility.Visible;
                 meal.Text = appsettings["meal"].ToString();
-                dPicker = (DatePicker) appsettings["date"];
+                dPicker = (DatePicker)appsettings["date"];
                 dPicker.ValueStringFormat = "{0:D}";
                 date.Text = dPicker.ValueString;
             }
@@ -48,6 +53,15 @@ namespace Glicious
             }
         }
 
+        private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // ignore scenarios when we navigate back to this page and clear what was previously selected
+            if (listBox.SelectedItem != null)
+            {
+                //var selectedGroupUri = string.Format("/Views/GroupView.xaml?id={0}", id);
+                //NavigationService.Navigate(new Uri(selectedGroupUri, UriKind.Relative));
+            }
+        }
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             DateTime dTime = (DateTime)dPicker.Value;
@@ -56,63 +70,72 @@ namespace Glicious
            // System.Diagnostics.Debug.WriteLine(urlString);
             webClient.OpenReadAsync(new Uri(urlString));
             webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
-
         }
-
+       
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            Menu newMenu = new Menu();
             using (var reader = new StreamReader(e.Result))
             {
                 String json = reader.ReadToEnd();
                 JObject o = JObject.Parse(json);
-                newMenu.venues = new Menu.Venue[30];
+                Menu.Venue [] tempVens = new Menu.Venue[30];
                 int i = 0;
                 foreach (JToken venue in o[meal.Text.ToUpper()].Children())
                 {
-                    newMenu.venues[i] = new Menu.Venue();
-                    newMenu.venues[i].dishes = new Menu.Venue.Dish[60];
+                    Menu.Venue.Dish [] tempDishes = new Menu.Venue.Dish[60];
                     String temp = venue.ToString().Substring(1, 40);
-                    newMenu.venues[i].name = temp.Remove(temp.IndexOf("\""));
+                    String venName = temp.Remove(temp.IndexOf("\""));
                     int j = 0;
                     foreach (JToken dish in venue.Children().Children())
                     {
-                        newMenu.venues[i].dishes[j] = new Menu.Venue.Dish();
-                        newMenu.venues[i].dishes[j].name = (String)dish["name"];
+                        bool ovolacto, vegan, halal, passover, hasNutrition;
+                        String name = (String)dish["name"];
                         if (dish["ovolacto"].Equals("true"))
-                            newMenu.venues[i].dishes[j].ovolacto = true;
+                            ovolacto = true;
                         else
-                            newMenu.venues[i].dishes[j].ovolacto = false;
+                            ovolacto = false;
                         if (dish["vegan"].Equals("true"))
-                            newMenu.venues[i].dishes[j].vegan = true;
+                            vegan = true;
                         else
-                            newMenu.venues[i].dishes[j].vegan = false;
+                            vegan = false;
                         if (dish["passover"].Equals("true"))
-                            newMenu.venues[i].dishes[j].passover = true;
+                            passover = true;
                         else
-                            newMenu.venues[i].dishes[j].passover = false;
+                            passover = false;
                         if (dish["halal"].Equals("true"))
-                            newMenu.venues[i].dishes[j].halal = true;
+                            halal = true;
                         else
-                            newMenu.venues[i].dishes[j].halal = false;
+                            halal = false;
 
                         if (dish["nutrition"].Equals("NIL"))
-                            newMenu.venues[i].dishes[j].hasNutrition = false;
+                        {
+                            hasNutrition = false;
+                            tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal);
+                        }
                         else
                         {
-                            newMenu.venues[i].dishes[j].hasNutrition = true;
-                            newMenu.venues[i].dishes[j].nutrition = new float[20];
+                            hasNutrition = true;
+                            float[] nutrition = new float[20];
                             int k = 0;
                             foreach (JToken child in dish["nutrition"])
-                                newMenu.venues[i].dishes[j].nutrition[k] = (float)child;
+                                nutrition[k++] = (float)child;
+                            tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal, nutrition);
                         }
+                        
                     }
+                    tempVens[i++] = new Menu.Venue(venName, tempDishes);;
                 }
+                menu = new Menu(tempVens);
             }
-            //TODO - make dishes visible
-
-           // venues.DataContext = newMenu.venues;
-           // venues.ItemsSource = newMenu.venues;
+            foreach (Menu.Venue ven in menu.venues)
+                if (ven != null)
+                {
+                    listBox.Items.Add(ven);
+                    foreach (Menu.Venue.Dish dish in ven.dishes)
+                        if (dish != null)
+                            listBox.Items.Add(dish);
+                    listBox.Items.Add(new Menu.Venue("\t", null));
+                }
         }
 
         void settings_Click(object sender, EventArgs e)

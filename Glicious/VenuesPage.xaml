@@ -28,7 +28,13 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox Height="565" HorizontalAlignment="Left" Margin="0,46,0,0" Name="venues" VerticalAlignment="Top" Width="456" />
+            <ListBox HorizontalAlignment="Left" Margin="8,46,0,6" Name="listBox" Width="460" FontSize="28" SelectionChanged="listBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding name}" FontSize="28" Margin="0,0,0,8" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="38,121,0,0" Name="meal" Text="" VerticalAlignment="Top" Grid.RowSpan="2" Width="146" FontSize="24" />
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="190,121,0,0" Name="date" Text="" VerticalAlignment="Top" Width="266" Grid.RowSpan="2" TextAlignment="Right" />

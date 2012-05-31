@@ -13,20 +13,50 @@ namespace Glicious
 {
     public class Menu
     {
-        public Venue[] venues;
+        public Menu(Venue[] vens)
+        {
+            venues = vens;
+        }
+
+        public Venue[] venues { get; set; }
         public class Venue
         {
-            public String name;
-            public Dish[] dishes;
+            public Venue (String nm, Dish[] dishAr)
+            {
+                name = nm;
+                dishes = dishAr;
+            }
+
+            public String name { get; set; }
+            public Dish[] dishes { get; set; }
             public class Dish
             {
-                public bool hasNutrition;
-                public bool ovolacto;
-                public bool vegan;
-                public bool passover;
-                public bool halal;
-                public String name;
-                public float[] nutrition;
+                public Dish(String nm, bool hasN, bool ovo, bool veg, bool passO, bool hal, float[] nutr)
+                {
+                    name = nm;
+                    hasNutrition = hasN;
+                    ovolacto = ovo;
+                    vegan = veg;
+                    passover = passO;
+                    halal = hal;
+                    nutrition = nutr;
+                }
+                public Dish(String nm, bool hasN, bool ovo, bool veg, bool passO, bool hal)
+                {
+                    name = nm;
+                    hasNutrition = hasN;
+                    ovolacto = ovo;
+                    vegan = veg;
+                    passover = passO;
+                    halal = hal;
+                }
+                public String name { get; set; }
+                public bool hasNutrition { get; set; }
+                public bool ovolacto { get; set; }
+                public bool vegan { get; set; }
+                public bool passover { get; set; }
+                public bool halal { get; set; }
+                public float[] nutrition { get; set; }
             }
         }
     }
