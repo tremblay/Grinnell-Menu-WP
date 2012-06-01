@@ -8,26 +8,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Collections.Specialized;
 
 namespace Glicious
 {
-    public class Menu : INotifyPropertyChanged
+    public class Menu
     {
         public Menu(Venue[] vens)
         {
             venues = vens;
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(String info)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
-        }
-        public String forUpdate {get {return null;} set { NotifyPropertyChanged("");}}
         public Venue[] venues { get; set; }
         public class Venue
         {

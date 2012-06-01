@@ -16,7 +16,7 @@ namespace Glicious
 {
     public partial class NutritionPage : PhoneApplicationPage
     {
-        private IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
+        IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
         private Menu.Venue.Dish dish;
         public NutritionPage()
         {

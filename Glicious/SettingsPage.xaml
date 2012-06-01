@@ -6,13 +6,18 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Glicious"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
-
+<!--
+    <phone:PhoneApplicationPage.Resources>
+       <local:AppSettings x:Key="appSettings"></local:AppSettings>
+    </phone:PhoneApplicationPage.Resources> -->
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -28,7 +33,9 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <CheckBox Content="Vegan Filter" Height="92" HorizontalAlignment="Left" Margin="83,6,0,0" Name="veganBox" VerticalAlignment="Top" FlowDirection="LeftToRight" Width="286" FontSize="32" />
+            <!--<CheckBox Content="CheckBox Setting" Height="Auto" HorizontalAlignment="Left" Margin="60,20,0,0" Name="checkBoxSetting" VerticalAlignment="Top"
+            IsChecked="{Binding Source={StaticResource appSettings}, Path=OvoCheckBoxSetting, Mode=TwoWay}"  />-->
+            <CheckBox Content="Vegan Filter" Height="92" HorizontalAlignment="Left" Margin="83,6,0,0" Name="veganBox" VerticalAlignment="Top" FlowDirection="LeftToRight" Width="286" FontSize="32" DataContext="{Binding}" />
             <CheckBox Content="Ovolacto Filter" FlowDirection="LeftToRight" FontSize="32" Height="92" HorizontalAlignment="Left" Margin="83,108,0,0" Name="ovolactoBox" VerticalAlignment="Top" Width="286" />
             <Image Height="206" Margin="125,273,125,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Source="/Glicious;component/ApplicationIcon.png" />
             <TextBlock Height="75" HorizontalAlignment="Left" Margin="12,192,0,0" Name="textBlock1" Text="Grinnell Dining" VerticalAlignment="Top" Width="438" FontSize="56" TextAlignment="Center" FontFamily="fonts/vivaldi.ttf#Vivaldi"/>

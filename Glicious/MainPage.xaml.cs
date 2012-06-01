@@ -12,14 +12,14 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.IO.IsolatedStorage;
 using System.IO;
-//using System.Runtime.Serialization;
+
 
 namespace Glicious
 {
     public partial class MainPage : PhoneApplicationPage
     {
 
-        private IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
+        IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
         // Constructor
         public MainPage()
         {
@@ -29,6 +29,12 @@ namespace Glicious
 
             hideAllButtons();
             textBlock1.Text = "Loading menus, please wait.";
+            if (!(appsettings.Contains("vegan")) || !(appsettings.Contains("ovolacto")))
+            {
+               // System.Diagnostics.Debug.WriteLine("here");
+                appsettings.Add("vegan", false);
+                appsettings.Add("ovolacto", false);
+            }
         }
 
         private void hideAllButtons()
