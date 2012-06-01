@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using System.IO.IsolatedStorage;
 using System.IO;
 
 
@@ -18,8 +17,6 @@ namespace Glicious
 {
     public partial class MainPage : PhoneApplicationPage
     {
-
-        IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
         // Constructor
         public MainPage()
         {
@@ -29,12 +26,6 @@ namespace Glicious
 
             hideAllButtons();
             textBlock1.Text = "Loading menus, please wait.";
-            if (!(appsettings.Contains("vegan")) || !(appsettings.Contains("ovolacto")))
-            {
-               // System.Diagnostics.Debug.WriteLine("here");
-                appsettings.Add("vegan", false);
-                appsettings.Add("ovolacto", false);
-            }
         }
 
         private void hideAllButtons()
@@ -117,43 +108,32 @@ namespace Glicious
 
         private void buttonClick()
         {
-            if (appsettings.Contains("date"))
-                appsettings.Remove("date");
             datePicker.ValueStringFormat = "{0:D}";
-            appsettings.Add("date", datePicker);
-
+            (App.Current as App).datePick = datePicker;
             NavigationService.Navigate(new Uri("/VenuesPage.xaml", UriKind.Relative));
         }
 
         private void bfastButton_Click(object sender, RoutedEventArgs e)
         {
-            if (appsettings.Contains("meal"))
-                appsettings.Remove("meal");
-            appsettings.Add("meal", "Breakfast");
+            (App.Current as App).mealString = "Breakfast";
             buttonClick();
         }
 
         private void lunchButton_Click(object sender, RoutedEventArgs e)
         {
-            if (appsettings.Contains("meal"))
-                appsettings.Remove("meal");
-            appsettings.Add("meal", "Lunch");
+            (App.Current as App).mealString = "Lunch";
             buttonClick();
         }
 
         private void dinnerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (appsettings.Contains("meal"))
-                appsettings.Remove("meal");
-            appsettings.Add("meal", "Dinner");
+            (App.Current as App).mealString = "Dinner";
             buttonClick();
         }
 
         private void outtakesButton_Click(object sender, RoutedEventArgs e)
         {
-            if (appsettings.Contains("meal"))
-                appsettings.Remove("meal");
-            appsettings.Add("meal", "Outtakes");
+            (App.Current as App).mealString = "Outtakes";
             buttonClick();
         }
     }

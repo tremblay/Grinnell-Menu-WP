@@ -18,7 +18,6 @@ namespace Glicious
     public partial class SettingsPage : PhoneApplicationPage
     {
         IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
-        
         public SettingsPage()
         {
             InitializeComponent();
@@ -33,20 +32,9 @@ namespace Glicious
             cancel.Text = "Cancel";
             ApplicationBar.Buttons.Add(cancel);
             cancel.Click += new EventHandler(cancel_Click);
-            
-            if (!(appsettings.Contains("vegan")) || !(appsettings.Contains("ovolacto")))
-            {
-                ovolactoBox.IsChecked = false;
-                veganBox.IsChecked = false;
-                appsettings.Add("ovolacto", false);
-                appsettings.Add("vegan", false);
-            }
-            else
-            {
-                ovolactoBox.IsChecked = (bool)appsettings["ovolacto"];
-                veganBox.IsChecked = (bool)appsettings["vegan"];
-            }
 
+            ovolactoBox.IsChecked = (App.Current as App).ovoFilter;
+            veganBox.IsChecked = (App.Current as App).veganFilter;
         }
 
         void save_Click(object sender, EventArgs e)
@@ -57,6 +45,9 @@ namespace Glicious
                 appsettings.Remove("vegan");
             appsettings.Add("ovolacto", ovolactoBox.IsChecked);
             appsettings.Add("vegan", veganBox.IsChecked);
+            (App.Current as App).ovoFilter = (bool)ovolactoBox.IsChecked;
+            (App.Current as App).veganFilter = (bool)veganBox.IsChecked;
+            appsettings.Save();
             NavigationService.GoBack();
         }
 

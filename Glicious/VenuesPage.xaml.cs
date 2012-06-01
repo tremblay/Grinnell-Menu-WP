@@ -10,22 +10,21 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using System.IO.IsolatedStorage;
 using Microsoft.Phone.Shell;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls.Primitives;
+using System.IO.IsolatedStorage;
 
 namespace Glicious
 {
     public partial class VenuesPage : PhoneApplicationPage
     {
+        IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
         public Menu menu;
         private DatePicker dPicker;
-        IsolatedStorageSettings appsettings = IsolatedStorageSettings.ApplicationSettings;
         Popup mealChange = new Popup();
        
-
         public VenuesPage()
         {
             InitializeComponent();
@@ -37,24 +36,22 @@ namespace Glicious
             settings.Click += new EventHandler(settings_Click);
             ApplicationBarIconButton changeMeal = new ApplicationBarIconButton();
             changeMeal.IconUri = new Uri("/Images/change.png", UriKind.Relative);
-            changeMeal.Text = "Change Meal";
+            changeMeal.Text = "Change";
             changeMeal.Click += new EventHandler(changeMeal_Click);
             ApplicationBar.Buttons.Add(changeMeal);
             ApplicationBar.Buttons.Add(settings);
-            if ((appsettings.Contains("meal")) && (appsettings.Contains("date")))
+
+            dPicker = (App.Current as App).datePick;
+            dPicker.ValueStringFormat = "{0:D}";
+            date.Text = dPicker.ValueString;
+            meal.Text = (App.Current as App).mealString;
+
+            if (appsettings.Contains("vegan"))
             {
-                meal.Visibility = Visibility.Visible;
-                date.Visibility = Visibility.Visible;
-                meal.Text = appsettings["meal"].ToString();
-                dPicker = (DatePicker)appsettings["date"];
-                dPicker.ValueStringFormat = "{0:D}";
-                date.Text = dPicker.ValueString;
+                (App.Current as App).ovoFilter = (bool)appsettings["ovolacto"];
+                (App.Current as App).veganFilter = (bool)appsettings["vegan"];
             }
-            else
-            {
-                meal.Visibility = Visibility.Collapsed;
-                date.Visibility = Visibility.Collapsed;
-            }
+
         }
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -70,17 +67,11 @@ namespace Glicious
                     //Menu.Venue.Dish dummy2 = (Menu.Venue.Dish)listBox.SelectedItem;
                     //if (dummy2.hasNutrition)
                     //{
-                        if (appsettings.Contains("nutrDish"))
-                        {
-                            appsettings.Remove("nutrDish");
-                        }
-                        appsettings.Add("nutrDish", listBox.SelectedItem);
-                        NavigationService.Navigate(new Uri("/NutritionPage.xaml", UriKind.Relative));
+                    (App.Current as App).nutrDish = (Menu.Venue.Dish)listBox.SelectedItem;
+                    NavigationService.Navigate(new Uri("/NutritionPage.xaml", UriKind.Relative));
                     //}
                 }
                 listBox.SelectedIndex = -1;
-                //var selectedGroupUri = string.Format("/Views/GroupView.xaml?id={0}", id);
-                //NavigationService.Navigate(new Uri(selectedGroupUri, UriKind.Relative));
             }
         }
 
@@ -105,14 +96,14 @@ namespace Glicious
             webClient.OpenReadAsync(new Uri(urlString));
             webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
         }
-       
+
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
             using (var reader = new StreamReader(e.Result))
             {
                 String json = reader.ReadToEnd();
                 JObject o = JObject.Parse(json);
-                Menu.Venue [] tempVens = new Menu.Venue[30];
+                Menu.Venue[] tempVens = new Menu.Venue[30];
                 int i = 0;
 
                 if (o[meal.Text.ToUpper()] != null && o[meal.Text.ToUpper()].HasValues)
@@ -175,56 +166,43 @@ namespace Glicious
                     listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
                 menu = new Menu(tempVens);
             }
-            if ((appsettings.Contains("vegan")) && (appsettings.Contains("ovolacto")))
+            if ((App.Current as App).ovoFilter)
             {
-                if ((bool)appsettings["ovolacto"])
-                {
-                    foreach (Menu.Venue ven in menu.venues)
-                        if (ven != null)
-                        {
-                            bool added = false;
-                            listBox.Items.Add(ven);
-                            foreach (Menu.Venue.Dish dish in ven.dishes)
-                                if (dish != null && (dish.ovolacto || dish.vegan))
-                                {
-                                    listBox.Items.Add(dish);
-                                    added = true;
-                                }
-                            if (!added)
-                                listBox.Items.Remove(ven);
-                            else
-                                listBox.Items.Add(new Menu.Venue("\t", null));
-                        }
-                }
-                else if ((bool)appsettings["vegan"])
-                {
-                    foreach (Menu.Venue ven in menu.venues)
-                        if (ven != null)
-                        {
-                            bool added = false;
-                            listBox.Items.Add(ven);
-                            foreach (Menu.Venue.Dish dish in ven.dishes)
-                                if (dish != null && (dish.vegan))
-                                {
-                                    listBox.Items.Add(dish);
-                                    added = true;
-                                }
-                            if (!added)
-                                listBox.Items.Remove(ven);
-                            else
-                                listBox.Items.Add(new Menu.Venue("\t", null));
-                        }
-                }
-                else
-                    foreach (Menu.Venue ven in menu.venues)
-                        if (ven != null)
-                        {
-                            listBox.Items.Add(ven);
-                            foreach (Menu.Venue.Dish dish in ven.dishes)
-                                if (dish != null)
-                                    listBox.Items.Add(dish);
+                foreach (Menu.Venue ven in menu.venues)
+                    if (ven != null)
+                    {
+                        bool added = false;
+                        listBox.Items.Add(ven);
+                        foreach (Menu.Venue.Dish dish in ven.dishes)
+                            if (dish != null && (dish.ovolacto || dish.vegan))
+                            {
+                                listBox.Items.Add(dish);
+                                added = true;
+                            }
+                        if (!added)
+                            listBox.Items.Remove(ven);
+                        else
                             listBox.Items.Add(new Menu.Venue("\t", null));
-                        }  
+                    }
+            }
+            else if ((App.Current as App).veganFilter)
+            {
+                foreach (Menu.Venue ven in menu.venues)
+                    if (ven != null)
+                    {
+                        bool added = false;
+                        listBox.Items.Add(ven);
+                        foreach (Menu.Venue.Dish dish in ven.dishes)
+                            if (dish != null && (dish.vegan))
+                            {
+                                listBox.Items.Add(dish);
+                                added = true;
+                            }
+                        if (!added)
+                            listBox.Items.Remove(ven);
+                        else
+                            listBox.Items.Add(new Menu.Venue("\t", null));
+                    }
             }
             else
                 foreach (Menu.Venue ven in menu.venues)
@@ -250,11 +228,10 @@ namespace Glicious
 
         void popupBFast_Click(object sender, EventArgs e)
         {
-            if (!appsettings["meal"].ToString().Equals("Breakfast"))
+            if (!(App.Current as App).mealString.Equals("Breakfast"))
             {
-                appsettings.Remove("meal");
-                appsettings.Add("meal", "Breakfast");
                 meal.Text = "Breakfast";
+                (App.Current as App).mealString = "Breakfast"; 
                 loadData();
             }
             mealChange.IsOpen = false;
@@ -262,11 +239,10 @@ namespace Glicious
 
         void popupLunch_Click(object sender, EventArgs e)
         {
-            if (!appsettings["meal"].ToString().Equals("Lunch"))
+            if (!(App.Current as App).mealString.Equals("Lunch"))
             {
-                appsettings.Remove("meal");
-                appsettings.Add("meal", "Lunch");
                 meal.Text = "Lunch";
+                (App.Current as App).mealString = "Lunch"; 
                 loadData();
             }
             mealChange.IsOpen = false;
@@ -274,11 +250,10 @@ namespace Glicious
 
         void popupDinner_Click(object sender, EventArgs e)
         {
-            if (!appsettings["meal"].ToString().Equals("Dinner"))
+            if (!(App.Current as App).mealString.Equals("Dinner"))
             {
-                appsettings.Remove("meal");
-                appsettings.Add("meal", "Dinner");
                 meal.Text = "Dinner";
+                (App.Current as App).mealString = "Dinner"; 
                 loadData();
             }
             mealChange.IsOpen = false;
@@ -286,15 +261,15 @@ namespace Glicious
 
         void popupOuttakes_Click(object sender, EventArgs e)
         {
-            if (!appsettings["meal"].ToString().Equals("Outtakes"))
+            if (!(App.Current as App).mealString.Equals("Outtakes"))
             {
-                appsettings.Remove("meal");
-                appsettings.Add("meal", "Outtakes");
                 meal.Text = "Outtakes";
+                (App.Current as App).mealString = "Outtakes";
                 loadData();
             }
             mealChange.IsOpen = false;
         }
+
         void changeMeal_Click(object sender, EventArgs e)
         {
             Border border = new Border();
