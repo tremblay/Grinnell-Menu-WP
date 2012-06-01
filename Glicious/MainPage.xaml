@@ -30,12 +30,11 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <Image Height="220" HorizontalAlignment="Left" Name="banner" Stretch="Uniform" VerticalAlignment="Top" Width="220" Source="/Glicious;component/Background.png" Margin="114,0,0,0" />
             <toolkit:DatePicker x:Name="datePicker" Margin="12,240,0,325" Background="White" FlowDirection="LeftToRight" FontSize="24" FontStyle="Normal" FontFamily="Tahoma" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Width="436" ValueStringFormat="{}{0:D}" />
-            <Button Background="#FF6BD80E" Content="Breakfast" Height="75" HorizontalAlignment="Left" Margin="12,318,0,0" Name="bfastButton" VerticalAlignment="Top" Width="438" Click="bfastButton_Click" />
-            <Button Background="#FF6BD80E" Content="Lunch" Height="75" HorizontalAlignment="Left" Margin="12,399,0,0" Name="lunchButton" VerticalAlignment="Top" Width="438" Click="lunchButton_Click" />
-            <Button Background="#FF6BD80E" Content="Dinner" Height="75" HorizontalAlignment="Left" Margin="10,480,0,0" Name="dinnerButton" VerticalAlignment="Top" Width="438" Click="dinnerButton_Click" />
-            <Button Background="#FF6BD80E" Content="Outtakes" Height="75" HorizontalAlignment="Left" Margin="12,561,0,0" Name="outtakesButton" VerticalAlignment="Top" Width="438" Click="outtakesButton_Click" />
-            <TextBlock Height="130" HorizontalAlignment="Left" Margin="12,323,0,0" Name="textBlock1" Text="" VerticalAlignment="Top" Width="436" Visibility="Collapsed" />
-            <TextBlock Height="30" HorizontalAlignment="Left" Margin="336,553,0,0" Name="daysAvailableTXT" Text="" VerticalAlignment="Top" Visibility="Collapsed" />
+            <Button Background="Black" Content="Breakfast" Height="75" HorizontalAlignment="Left" Margin="12,318,0,0" Name="bfastButton" VerticalAlignment="Top" Width="438" Click="bfastButton_Click" />
+            <Button Background="Black" Content="Lunch" Height="75" HorizontalAlignment="Left" Margin="12,399,0,0" Name="lunchButton" VerticalAlignment="Top" Width="438" Click="lunchButton_Click" />
+            <Button Background="Black" Content="Dinner" Height="75" HorizontalAlignment="Left" Margin="10,480,0,0" Name="dinnerButton" VerticalAlignment="Top" Width="438" Click="dinnerButton_Click" />
+            <Button Background="Black" Content="Outtakes" Height="75" HorizontalAlignment="Left" Margin="12,561,0,0" Name="outtakesButton" VerticalAlignment="Top" Width="438" Click="outtakesButton_Click" />
+            <TextBlock Height="130" HorizontalAlignment="Left" Margin="20,323,0,0" Name="textBlock1" Text="" VerticalAlignment="Top" Width="436" Visibility="Collapsed" />
         </Grid>
     </Grid>
 

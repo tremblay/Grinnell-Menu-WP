@@ -17,6 +17,8 @@ namespace Glicious
 {
     public partial class MainPage : PhoneApplicationPage
     {
+
+        private string daysAvailableTXT;
         // Constructor
         public MainPage()
         {
@@ -65,9 +67,9 @@ namespace Glicious
         {
             using (var reader = new StreamReader(e.Result))
             {
-                daysAvailableTXT.Text = reader.ReadToEnd();
+                daysAvailableTXT = reader.ReadToEnd();
                 DateTime newTime = (DateTime)datePicker.Value;
-                if (daysAvailableTXT.Text.Equals("-1"))
+                if (daysAvailableTXT.Equals("-1"))
                 {
                     datePicker.Value = DateTime.Today;
                     hideAllButtons();
@@ -81,16 +83,16 @@ namespace Glicious
                         datePicker.Value = newTime;
                         checkButtons(newTime);
                     }
-                    else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT.Text)) < newTime.DayOfYear)
+                    else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT)) < newTime.DayOfYear)
                     {
                         hideAllButtons();
                         String s;
-                        if (daysAvailableTXT.Text.Equals("0"))
+                        if (daysAvailableTXT.Equals("0"))
                             s = "No menus are available for the selected date.\nToday's menu is the only available menu.";
-                        else if (daysAvailableTXT.Text.Equals("0"))
+                        else if (daysAvailableTXT.Equals("0"))
                             s = "No menus are available for the selected date.\nThere is only 1 day after today available.";
                         else
-                            s = System.String.Format("No menus are available for the selected date.\nThere are only {0} days after today available.", daysAvailableTXT.Text);
+                            s = System.String.Format("No menus are available for the selected date.\nThere are only {0} days after today available.", daysAvailableTXT);
                         textBlock1.Text = s;
                     }
                     else

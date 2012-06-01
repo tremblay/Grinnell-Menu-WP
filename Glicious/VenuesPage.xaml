@@ -35,6 +35,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <TextBlock Height="233" HorizontalAlignment="Left" Margin="12,46,0,0" Name="textBlock1" Text="" VerticalAlignment="Top" Width="444" />
         </Grid>
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="38,121,0,0" Name="meal" Text="" VerticalAlignment="Top" Grid.RowSpan="2" Width="146" FontSize="24" />
         <TextBlock Height="43" HorizontalAlignment="Left" Margin="190,121,0,0" Name="date" Text="" VerticalAlignment="Top" Width="266" Grid.RowSpan="2" TextAlignment="Right" />

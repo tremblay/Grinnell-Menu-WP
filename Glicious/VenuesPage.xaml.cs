@@ -29,6 +29,8 @@ namespace Glicious
         {
             InitializeComponent();
             mealChange.IsOpen = false;
+            textBlock1.Visibility = Visibility.Visible;
+            textBlock1.Text = "Loading menu, please wait.";
             ApplicationBar = new ApplicationBar();
             ApplicationBarIconButton settings = new ApplicationBarIconButton();
             settings.IconUri = new Uri("/Images/settings.png", UriKind.Relative);
@@ -166,6 +168,7 @@ namespace Glicious
                     listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
                 menu = new Menu(tempVens);
             }
+            textBlock1.Visibility = Visibility.Collapsed;
             if ((App.Current as App).ovoFilter)
             {
                 foreach (Menu.Venue ven in menu.venues)
@@ -273,36 +276,35 @@ namespace Glicious
         void changeMeal_Click(object sender, EventArgs e)
         {
             Border border = new Border();
-            border.BorderBrush = new SolidColorBrush(Colors.Black);
-            border.BorderThickness = new Thickness(5.0);
+            border.BorderBrush = new SolidColorBrush(Colors.White);
+            border.BorderThickness = new Thickness(2.0);
 
             StackPanel panel1 = new StackPanel();
             panel1.Background = new SolidColorBrush(Colors.Gray);
-
             Button cancel = new Button();
             cancel.Content = "Cancel";
-            cancel.Margin = new Thickness(5.0);
+            cancel.Margin = new Thickness(0);
             cancel.Click += new RoutedEventHandler(popupCancel_Click);
             Button bFast = new Button();
             bFast.Content = "Breakfast";
-            bFast.Margin = new Thickness(5.0);
+            bFast.Margin = new Thickness(0);
             bFast.Click += new RoutedEventHandler(popupBFast_Click);
             Button lunch = new Button();
             lunch.Content = "Lunch";
-            lunch.Margin = new Thickness(5.0);
+            lunch.Margin = new Thickness(0);
             lunch.Click += new RoutedEventHandler(popupLunch_Click);
             Button dinner = new Button();
             dinner.Content = "Dinner";
-            dinner.Margin = new Thickness(5.0);
+            dinner.Margin = new Thickness(0);
             dinner.Click += new RoutedEventHandler(popupDinner_Click);
             Button outtakes = new Button();
             outtakes.Content = "Outtakes";
-            outtakes.Margin = new Thickness(5.0);
+            outtakes.Margin = new Thickness(0);
             outtakes.Click += new RoutedEventHandler(popupOuttakes_Click);
             TextBlock textblock1 = new TextBlock();
-            textblock1.Text = "Choose a meal";
+            textblock1.Text = " Select meal:";
             textblock1.FontSize = 24;
-            textblock1.Margin = new Thickness(5.0);
+            textblock1.Margin = new Thickness(10.0);
             panel1.Children.Add(textblock1);
             DateTime dTime = (DateTime)dPicker.Value;
             if ((dTime.DayOfWeek == DayOfWeek.Saturday) || (dTime.DayOfWeek == DayOfWeek.Sunday))
