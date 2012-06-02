@@ -224,9 +224,16 @@ namespace Glicious
              NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }
 
+        void popupEnd()
+        {
+            meal.Opacity = Venues.Opacity = date.Opacity = .9;
+            listBox.Opacity = 1;
+            mealChange.IsOpen = false;
+        }
+
         void popupCancel_Click(object sender, EventArgs e)
         {
-            mealChange.IsOpen = false;
+            popupEnd();   
         }
 
         void popupBFast_Click(object sender, EventArgs e)
@@ -237,7 +244,7 @@ namespace Glicious
                 (App.Current as App).mealString = "Breakfast"; 
                 loadData();
             }
-            mealChange.IsOpen = false;
+            popupEnd(); 
         }
 
         void popupLunch_Click(object sender, EventArgs e)
@@ -248,7 +255,7 @@ namespace Glicious
                 (App.Current as App).mealString = "Lunch"; 
                 loadData();
             }
-            mealChange.IsOpen = false;
+            popupEnd(); 
         }
 
         void popupDinner_Click(object sender, EventArgs e)
@@ -259,7 +266,7 @@ namespace Glicious
                 (App.Current as App).mealString = "Dinner"; 
                 loadData();
             }
-            mealChange.IsOpen = false;
+            popupEnd(); 
         }
 
         void popupOuttakes_Click(object sender, EventArgs e)
@@ -270,7 +277,7 @@ namespace Glicious
                 (App.Current as App).mealString = "Outtakes";
                 loadData();
             }
-            mealChange.IsOpen = false;
+            popupEnd(); 
         }
 
         void changeMeal_Click(object sender, EventArgs e)
@@ -335,9 +342,10 @@ namespace Glicious
             mealChange.Child = border;
 
             // Set where the popup will show up on the screen.
-            mealChange.VerticalOffset = 50;
+            mealChange.VerticalOffset = 200;
             mealChange.HorizontalOffset = 150;
-
+            meal.Opacity = Venues.Opacity = date.Opacity = .75;
+            listBox.Opacity = .25;
             // Open the popup.
             mealChange.IsOpen = true;
         }
