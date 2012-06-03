@@ -7,11 +7,11 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Glicious")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A quick and easy way to check the Dining Menu for the Grinnell College Marketplace. You can check the menu for today, tomorrow, or any day in the next week as and when a new menu becomes available. You can also filter out choices by personal dietary concerns.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("Grinnell AppDev")]
 [assembly: AssemblyProduct("Glicious")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
