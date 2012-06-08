@@ -20,7 +20,23 @@ namespace Glicious
         public NutritionPage()
         {
             InitializeComponent();
-
+            (App.Current as App).inverted = IsLightTheme;
+            if ((App.Current as App).inverted)
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.White);
+                Glicious.Foreground = new SolidColorBrush(Colors.Black);
+                PgTitle.Foreground = new SolidColorBrush(Colors.Black);
+                dishName.Foreground = new SolidColorBrush(Colors.Black);
+                nutrTxt.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+                Glicious.Foreground = new SolidColorBrush(Colors.White);
+                PgTitle.Foreground = new SolidColorBrush(Colors.White);
+                dishName.Foreground = new SolidColorBrush(Colors.White);
+                nutrTxt.Foreground = new SolidColorBrush(Colors.White);
+            }
             dish = (App.Current as App).nutrDish;
             dishName.Visibility = Visibility.Visible;
             dishName.Text = dish.name;
@@ -33,6 +49,15 @@ namespace Glicious
             {
                 nutrTxt.FontSize = 44;
                 nutrTxt.Text = "No nutritional \ninformation is \ncurrently available \nfor this dish.";
+            }
+        }
+
+        public bool IsLightTheme
+        {
+            get
+            {
+                return (Visibility)Resources["PhoneLightThemeVisibility"]
+                    == Visibility.Visible;
             }
         }
     }

@@ -21,6 +21,25 @@ namespace Glicious
         public SettingsPage()
         {
             InitializeComponent();
+            (App.Current as App).inverted = IsLightTheme;
+            if ((App.Current as App).inverted)
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.White);
+                Glicious.Foreground = new SolidColorBrush(Colors.Black);
+                PgTitle.Foreground = new SolidColorBrush(Colors.Black);
+                textBlock1.Foreground = new SolidColorBrush(Colors.Black);
+                veganBox.Foreground = new SolidColorBrush(Colors.Black);
+                ovolactoBox.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+                Glicious.Foreground = new SolidColorBrush(Colors.White);
+                PgTitle.Foreground = new SolidColorBrush(Colors.White);
+                textBlock1.Foreground = new SolidColorBrush(Colors.White);
+                veganBox.Foreground = new SolidColorBrush(Colors.White);
+                ovolactoBox.Foreground = new SolidColorBrush(Colors.White);
+            }
             ApplicationBar = new ApplicationBar();
             ApplicationBarIconButton save = new ApplicationBarIconButton();
             save.IconUri = new Uri("/Images/save.png", UriKind.Relative);
@@ -36,7 +55,13 @@ namespace Glicious
             ovolactoBox.IsChecked = (App.Current as App).ovoFilter;
             veganBox.IsChecked = (App.Current as App).veganFilter;
         }
-
+        public bool IsLightTheme
+        {
+            get
+            {
+                return (Visibility)Resources["PhoneLightThemeVisibility"] == Visibility.Visible;
+            }
+        }
         void save_Click(object sender, EventArgs e)
         {
             if (appsettings.Contains("ovolacto"))

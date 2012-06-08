@@ -28,6 +28,28 @@ namespace Glicious
         public VenuesPage()
         {
             InitializeComponent();
+
+            (App.Current as App).inverted = IsLightTheme;
+            if ((App.Current as App).inverted)
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.White);
+                textBlock1.Foreground = new SolidColorBrush(Colors.Black);
+                PgTitle.Foreground = new SolidColorBrush(Colors.Black);
+                meal.Foreground = new SolidColorBrush(Colors.Black);
+                date.Foreground = new SolidColorBrush(Colors.Black);
+                listBox.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+                textBlock1.Foreground = new SolidColorBrush(Colors.White);
+                PgTitle.Foreground = new SolidColorBrush(Colors.White);
+                meal.Foreground = new SolidColorBrush(Colors.White);
+                date.Foreground = new SolidColorBrush(Colors.White);
+                listBox.Foreground = new SolidColorBrush(Colors.White);
+            }
+
+
             mealChange.IsOpen = false;
             textBlock1.Visibility = Visibility.Visible;
             textBlock1.Text = "Loading menu, please wait.";
@@ -55,7 +77,14 @@ namespace Glicious
             }
 
         }
-
+        public bool IsLightTheme
+        {
+            get
+            {
+                return (Visibility)Resources["PhoneLightThemeVisibility"]
+                    == Visibility.Visible;
+            }
+        }
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // ignore scenarios when we navigate back to this page and clear what was previously selected
@@ -93,7 +122,8 @@ namespace Glicious
             listBox.Items.Clear();
             DateTime dTime = (DateTime)dPicker.Value;
             var webClient = new WebClient();
-            String urlString = System.String.Format("http://www.cs.grinnell.edu/~tremblay/menu/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
+            String urlString = System.String.Format("http://tcdb.grinnell.edu/apps/glicious/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
+            //String urlString = System.String.Format("http://www.cs.grinnell.edu/~tremblay/menu/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
             // System.Diagnostics.Debug.WriteLine(urlString);
             webClient.OpenReadAsync(new Uri(urlString));
             webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
@@ -101,122 +131,130 @@ namespace Glicious
 
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            using (var reader = new StreamReader(e.Result))
+            try
             {
-                String json = reader.ReadToEnd();
-                JObject o = JObject.Parse(json);
-                Menu.Venue[] tempVens = new Menu.Venue[30];
-                int i = 0;
+                using (var reader = new StreamReader(e.Result))
+                {
+                    String json = reader.ReadToEnd();
+                    JObject o = JObject.Parse(json);
+                    Menu.Venue[] tempVens = new Menu.Venue[30];
+                    int i = 0;
 
-                if (o[meal.Text.ToUpper()] != null && o[meal.Text.ToUpper()].HasValues)
-                    foreach (JToken venue in o[meal.Text.ToUpper()].Children())
-                    {
-                        Menu.Venue.Dish[] tempDishes = new Menu.Venue.Dish[60];
-                        String temp = venue.ToString().Substring(1, 40);
-                        String venName = temp.Remove(temp.IndexOf("\""));
-                        int j = 0;
-                        foreach (JToken dish in venue.Children().Children())
+                    if (o[meal.Text.ToUpper()] != null && o[meal.Text.ToUpper()].HasValues)
+                        foreach (JToken venue in o[meal.Text.ToUpper()].Children())
                         {
-                            bool ovolacto, vegan, halal, passover, hasNutrition;
-
-                            String name = (String)dish["name"];
-
-                            String ovo = (String)dish["ovolacto"];
-                            if (ovo.Equals("true"))
-                                ovolacto = true;
-                            else
-                                ovolacto = false;
-
-                            String veg = (String)dish["vegan"];
-                            if (veg.Equals("true"))
-                                vegan = true;
-                            else
-                                vegan = false;
-
-                            String passO = (String)dish["passover"];
-                            if (passO.Equals("true"))
-                                passover = true;
-                            else
-                                passover = false;
-
-                            String hal = (String)dish["halal"];
-                            if (hal.Equals("true"))
-                                halal = true;
-                            else
-                                halal = false;
-
-                            Newtonsoft.Json.Linq.JValue dummy = new Newtonsoft.Json.Linq.JValue(false);
-                            if (dummy.GetType().FullName.Equals(dish["nutrition"].GetType().FullName))
+                            Menu.Venue.Dish[] tempDishes = new Menu.Venue.Dish[60];
+                            String temp = venue.ToString().Substring(1, 40);
+                            String venName = temp.Remove(temp.IndexOf("\""));
+                            int j = 0;
+                            foreach (JToken dish in venue.Children().Children())
                             {
-                                hasNutrition = false;
-                                tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal);
-                            }
-                            else
-                            {
-                                hasNutrition = true;
-                                float[] nutrition = new float[20];
-                                int k = 0;
-                                foreach (JToken child in dish["nutrition"])
-                                    nutrition[k++] = (float)child;
-                                tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal, nutrition);
-                            }
+                                bool ovolacto, vegan, halal, passover, hasNutrition;
 
+                                String name = (String)dish["name"];
+
+                                String ovo = (String)dish["ovolacto"];
+                                if (ovo.Equals("true"))
+                                    ovolacto = true;
+                                else
+                                    ovolacto = false;
+
+                                String veg = (String)dish["vegan"];
+                                if (veg.Equals("true"))
+                                    vegan = true;
+                                else
+                                    vegan = false;
+
+                                String passO = (String)dish["passover"];
+                                if (passO.Equals("true"))
+                                    passover = true;
+                                else
+                                    passover = false;
+
+                                String hal = (String)dish["halal"];
+                                if (hal.Equals("true"))
+                                    halal = true;
+                                else
+                                    halal = false;
+
+                                Newtonsoft.Json.Linq.JValue dummy = new Newtonsoft.Json.Linq.JValue(false);
+                                if (dummy.GetType().FullName.Equals(dish["nutrition"].GetType().FullName))
+                                {
+                                    hasNutrition = false;
+                                    tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal);
+                                }
+                                else
+                                {
+                                    hasNutrition = true;
+                                    float[] nutrition = new float[20];
+                                    int k = 0;
+                                    foreach (JToken child in dish["nutrition"])
+                                        nutrition[k++] = (float)child;
+                                    tempDishes[j++] = new Menu.Venue.Dish(name, hasNutrition, ovolacto, vegan, passover, halal, nutrition);
+                                }
+
+                            }
+                            tempVens[i++] = new Menu.Venue(venName, tempDishes); ;
                         }
-                        tempVens[i++] = new Menu.Venue(venName, tempDishes); ;
-                    }
+                    else
+                        listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
+                    menu = new Menu(tempVens);
+                }
+                textBlock1.Visibility = Visibility.Collapsed;
+                if ((App.Current as App).ovoFilter)
+                {
+                    foreach (Menu.Venue ven in menu.venues)
+                        if (ven != null)
+                        {
+                            bool added = false;
+                            listBox.Items.Add(ven);
+                            foreach (Menu.Venue.Dish dish in ven.dishes)
+                                if (dish != null && (dish.ovolacto || dish.vegan))
+                                {
+                                    listBox.Items.Add(dish);
+                                    added = true;
+                                }
+                            if (!added)
+                                listBox.Items.Remove(ven);
+                            else
+                                listBox.Items.Add(new Menu.Venue("\t", null));
+                        }
+                }
+                else if ((App.Current as App).veganFilter)
+                {
+                    foreach (Menu.Venue ven in menu.venues)
+                        if (ven != null)
+                        {
+                            bool added = false;
+                            listBox.Items.Add(ven);
+                            foreach (Menu.Venue.Dish dish in ven.dishes)
+                                if (dish != null && (dish.vegan))
+                                {
+                                    listBox.Items.Add(dish);
+                                    added = true;
+                                }
+                            if (!added)
+                                listBox.Items.Remove(ven);
+                            else
+                                listBox.Items.Add(new Menu.Venue("\t", null));
+                        }
+                }
                 else
-                    listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
-                menu = new Menu(tempVens);
-            }
-            textBlock1.Visibility = Visibility.Collapsed;
-            if ((App.Current as App).ovoFilter)
-            {
-                foreach (Menu.Venue ven in menu.venues)
-                    if (ven != null)
-                    {
-                        bool added = false;
-                        listBox.Items.Add(ven);
-                        foreach (Menu.Venue.Dish dish in ven.dishes)
-                            if (dish != null && (dish.ovolacto || dish.vegan))
-                            {
-                                listBox.Items.Add(dish);
-                                added = true;
-                            }
-                        if (!added)
-                            listBox.Items.Remove(ven);
-                        else
+                    foreach (Menu.Venue ven in menu.venues)
+                        if (ven != null)
+                        {
+                            listBox.Items.Add(ven);
+                            foreach (Menu.Venue.Dish dish in ven.dishes)
+                                if (dish != null)
+                                    listBox.Items.Add(dish);
                             listBox.Items.Add(new Menu.Venue("\t", null));
-                    }
+                        }
             }
-            else if ((App.Current as App).veganFilter)
+            catch (Exception execpt)
             {
-                foreach (Menu.Venue ven in menu.venues)
-                    if (ven != null)
-                    {
-                        bool added = false;
-                        listBox.Items.Add(ven);
-                        foreach (Menu.Venue.Dish dish in ven.dishes)
-                            if (dish != null && (dish.vegan))
-                            {
-                                listBox.Items.Add(dish);
-                                added = true;
-                            }
-                        if (!added)
-                            listBox.Items.Remove(ven);
-                        else
-                            listBox.Items.Add(new Menu.Venue("\t", null));
-                    }
+                textBlock1.Visibility = Visibility.Collapsed;
+                listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
             }
-            else
-                foreach (Menu.Venue ven in menu.venues)
-                    if (ven != null)
-                    {
-                        listBox.Items.Add(ven);
-                        foreach (Menu.Venue.Dish dish in ven.dishes)
-                            if (dish != null)
-                                listBox.Items.Add(dish);
-                        listBox.Items.Add(new Menu.Venue("\t", null));
-                    }
         }
 
         void settings_Click(object sender, EventArgs e)
@@ -226,7 +264,7 @@ namespace Glicious
 
         void popupEnd()
         {
-            meal.Opacity = Venues.Opacity = date.Opacity = .9;
+            meal.Opacity = PgTitle.Opacity = date.Opacity = .9;
             listBox.Opacity = 1;
             mealChange.IsOpen = false;
         }
@@ -287,7 +325,10 @@ namespace Glicious
             border.BorderThickness = new Thickness(2.0);
 
             StackPanel panel1 = new StackPanel();
-            panel1.Background = new SolidColorBrush(Colors.Gray);
+            if ((App.Current as App).inverted)
+                panel1.Background = new SolidColorBrush(Colors.LightGray);
+            else
+                panel1.Background = new SolidColorBrush(Colors.Gray);
             Button cancel = new Button();
             cancel.Content = "Cancel";
             cancel.Margin = new Thickness(0);
@@ -344,7 +385,7 @@ namespace Glicious
             // Set where the popup will show up on the screen.
             mealChange.VerticalOffset = 200;
             mealChange.HorizontalOffset = 150;
-            meal.Opacity = Venues.Opacity = date.Opacity = .75;
+            meal.Opacity = PgTitle.Opacity = date.Opacity = .75;
             listBox.Opacity = .25;
             // Open the popup.
             mealChange.IsOpen = true;

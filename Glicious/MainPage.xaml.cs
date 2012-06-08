@@ -23,11 +23,58 @@ namespace Glicious
         public MainPage()
         {
             InitializeComponent();
-
-            this.datePicker.ValueChanged += new EventHandler<DateTimeValueChangedEventArgs>(picker_ValueChanged);
-
+            (App.Current as App).inverted = IsLightTheme;
+            if ((App.Current as App).inverted)
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.White);
+                textBlock1.Foreground = new SolidColorBrush(Colors.Black);
+                PgTitle.Foreground = new SolidColorBrush(Colors.Black);
+                datePicker.Foreground = new SolidColorBrush(Colors.White);
+                datePicker.Background = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+                textBlock1.Foreground = new SolidColorBrush(Colors.White);
+                PgTitle.Foreground = new SolidColorBrush(Colors.White);
+                datePicker.Foreground = new SolidColorBrush(Colors.Black);
+                datePicker.Background = new SolidColorBrush(Colors.White);
+            }
+           
             hideAllButtons();
             textBlock1.Text = "Loading menus, please wait.";
+
+            changeColors(bfastButton);
+            changeColors(lunchButton);
+            changeColors(dinnerButton);
+            changeColors(outtakesButton);
+
+            this.datePicker.ValueChanged += new EventHandler<DateTimeValueChangedEventArgs>(picker_ValueChanged);
+        }
+
+        private void changeColors(Button b)
+        {
+            if ((App.Current as App).inverted)
+            {
+                b.BorderBrush = new SolidColorBrush(Colors.Black);
+                b.Background = new SolidColorBrush(Colors.White);
+                b.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                b.BorderBrush = new SolidColorBrush(Colors.White);
+                b.Background = new SolidColorBrush(Colors.Black);
+                b.Foreground = new SolidColorBrush(Colors.White);
+            }
+        }
+
+        public bool IsLightTheme
+        {
+            get
+            {
+                return (Visibility)Resources["PhoneLightThemeVisibility"]
+                    == Visibility.Visible;
+            }
         }
 
         private void hideAllButtons()
@@ -58,46 +105,56 @@ namespace Glicious
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             var webClient = new WebClient();
-            webClient.OpenReadAsync(new Uri("http://www.cs.grinnell.edu/~tremblay/menu/available_days_FAKE.php"));
+            webClient.OpenReadAsync(new Uri("http://tcdb.grinnell.edu/apps/glicious/available_days.php"));
+            //webClient.OpenReadAsync(new Uri("http://www.cs.grinnell.edu/~tremblay/menu/available_days_FAKE.php"));
             webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
 
         }
 
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
         {
-            using (var reader = new StreamReader(e.Result))
+            try
             {
-                daysAvailableTXT = reader.ReadToEnd();
-                DateTime newTime = (DateTime)datePicker.Value;
-                if (daysAvailableTXT.Equals("-1"))
+                using (var reader = new StreamReader(e.Result))
                 {
-                    datePicker.Value = DateTime.Today;
-                    hideAllButtons();
-                    textBlock1.Text = "No menus are currently available.";
-                }
-                else
-                {
-                    if (newTime.DayOfYear < DateTime.Today.DayOfYear)
+                    daysAvailableTXT = reader.ReadToEnd();
+                    DateTime newTime = (DateTime)datePicker.Value;
+                    if (daysAvailableTXT.Equals("0"))
                     {
-                        newTime = DateTime.Today;
-                        datePicker.Value = newTime;
-                        checkButtons(newTime);
-                    }
-                    else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT)) < newTime.DayOfYear)
-                    {
+                        datePicker.Value = DateTime.Today;
                         hideAllButtons();
-                        String s;
-                        if (daysAvailableTXT.Equals("0"))
-                            s = "No menus are available for the selected date.\nToday's menu is the only available menu.";
-                        else if (daysAvailableTXT.Equals("0"))
-                            s = "No menus are available for the selected date.\nThere is only 1 day after today available.";
-                        else
-                            s = System.String.Format("No menus are available for the selected date.\nThere are only {0} days after today available.", daysAvailableTXT);
-                        textBlock1.Text = s;
+                        textBlock1.Text = "No menus are currently available.";
                     }
                     else
-                        checkButtons(newTime);
+                    {
+                        if (newTime.DayOfYear < DateTime.Today.DayOfYear)
+                        {
+                            newTime = DateTime.Today;
+                            datePicker.Value = newTime;
+                            checkButtons(newTime);
+                        }
+                        else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT)) <= newTime.DayOfYear)
+                        {
+                            hideAllButtons();
+                            String s;
+                            if (daysAvailableTXT.Equals("1"))
+                                s = "No menus are available for the selected date.\nToday's menu is the only available menu.";
+                            else if (daysAvailableTXT.Equals("2"))
+                                s = "No menus are available for the selected date.\nThere is only 1 day after today available.";
+                            else
+                                s = System.String.Format("No menus are available for the selected date.\nThere are only {0} days after today available.", daysAvailableTXT);
+                            textBlock1.Text = s;
+                        }
+                        else
+                            checkButtons(newTime);
+                    }
                 }
+            }
+            catch (Exception except)
+            {
+                datePicker.Value = DateTime.Today;
+                hideAllButtons();
+                textBlock1.Text = "No menus are currently available.\nPlease check your network connection.";
             }
         }
  
