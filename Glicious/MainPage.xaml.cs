@@ -72,8 +72,7 @@ namespace Glicious
         {
             get
             {
-                return (Visibility)Resources["PhoneLightThemeVisibility"]
-                    == Visibility.Visible;
+                return (Visibility)Resources["PhoneLightThemeVisibility"] == Visibility.Visible;
             }
         }
 
@@ -84,7 +83,6 @@ namespace Glicious
             lunchButton.Visibility = Visibility.Collapsed;
             bfastButton.Visibility = Visibility.Collapsed;
             textBlock1.Visibility = Visibility.Visible;
-            
         }
 
         private void checkButtons(DateTime date)
@@ -104,11 +102,19 @@ namespace Glicious
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var webClient = new WebClient();
-            webClient.OpenReadAsync(new Uri("http://tcdb.grinnell.edu/apps/glicious/available_days.php"));
-            //webClient.OpenReadAsync(new Uri("http://www.cs.grinnell.edu/~tremblay/menu/available_days_FAKE.php"));
-            webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
-
+            try
+            {
+                var webClient = new WebClient();
+                webClient.OpenReadAsync(new Uri("http://tcdb.grinnell.edu/apps/glicious/available_days.php"));
+                //webClient.OpenReadAsync(new Uri("http://www.cs.grinnell.edu/~tremblay/menu/available_days_FAKE.php"));
+                webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
+            }
+            catch (Exception except)
+            {
+                datePicker.Value = DateTime.Today;
+                hideAllButtons();
+                textBlock1.Text = "No menus are currently available.\nPlease check your network connection.";
+            }
         }
 
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)

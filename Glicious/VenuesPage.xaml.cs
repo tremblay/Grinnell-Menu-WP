@@ -119,14 +119,22 @@ namespace Glicious
 
         private void loadData()
         {
-            listBox.Items.Clear();
-            DateTime dTime = (DateTime)dPicker.Value;
-            var webClient = new WebClient();
-            String urlString = System.String.Format("http://tcdb.grinnell.edu/apps/glicious/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
-            //String urlString = System.String.Format("http://www.cs.grinnell.edu/~tremblay/menu/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
-            // System.Diagnostics.Debug.WriteLine(urlString);
-            webClient.OpenReadAsync(new Uri(urlString));
-            webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
+            try
+            {
+                listBox.Items.Clear();
+                DateTime dTime = (DateTime)dPicker.Value;
+                var webClient = new WebClient();
+                String urlString = System.String.Format("http://tcdb.grinnell.edu/apps/glicious/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
+                //String urlString = System.String.Format("http://www.cs.grinnell.edu/~tremblay/menu/{0}-{1}-{2}.json", dTime.Month, dTime.Day, dTime.Year);
+                // System.Diagnostics.Debug.WriteLine(urlString);
+                webClient.OpenReadAsync(new Uri(urlString));
+                webClient.OpenReadCompleted += new OpenReadCompletedEventHandler(webClient_OpenReadCompleted);
+            }
+            catch (Exception execpt)
+            {
+                textBlock1.Visibility = Visibility.Collapsed;
+                listBox.Items.Add(new Menu.Venue("No menu available \nfor selected meal", null));
+            }
         }
 
         void webClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
