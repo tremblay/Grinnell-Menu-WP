@@ -125,7 +125,7 @@ namespace Glicious
                 {
                     daysAvailableTXT = reader.ReadToEnd();
                     DateTime newTime = (DateTime)datePicker.Value;
-                    if (daysAvailableTXT.Equals("0"))
+                    if (daysAvailableTXT.Equals("-1"))
                     {
                         datePicker.Value = DateTime.Today;
                         hideAllButtons();
@@ -139,7 +139,7 @@ namespace Glicious
                             datePicker.Value = newTime;
                             checkButtons(newTime);
                         }
-                        else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT)) <= newTime.DayOfYear)
+                        else if ((DateTime.Today.DayOfYear + Int32.Parse(daysAvailableTXT)) < newTime.DayOfYear)
                         {
                             hideAllButtons();
                             String s;
